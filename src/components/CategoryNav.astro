@@ -1,0 +1,67 @@
+---
+import { navChips } from '../data/menu';
+---
+<nav class="catnav" id="catnav" aria-label="تصنيفات المنيو">
+  <div class="catnav-in">
+    <ul class="chips" role="list" data-chips>
+      {navChips.map((c, i) => (
+        <li>
+          <a class="chip" href={`#${c.id}`} data-chip={c.id} aria-current={i === 0 ? 'true' : undefined}>{c.label}</a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</nav>
+
+<style>
+  .catnav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--purple-900);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 14px 26px -22px rgba(0, 0, 0, 0.9);
+  }
+  .catnav-in {
+    max-width: var(--wrap-wide);
+    margin-inline: auto;
+  }
+  .chips {
+    display: flex;
+    gap: 8px;
+    list-style: none;
+    margin: 0;
+    padding: 10px clamp(14px, 4vw, 24px);
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .chips::-webkit-scrollbar { display: none; }
+
+  .chip {
+    display: flex;
+    align-items: center;
+    min-height: 42px;
+    padding: 0 18px;
+    border-radius: var(--r-pill);
+    white-space: nowrap;
+    font-size: 15.5px;
+    font-weight: 500;
+    color: var(--on-purple-2);
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.09);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+    transition: background-color 0.24s var(--ease-out), color 0.24s var(--ease-out),
+      box-shadow 0.24s var(--ease-out);
+  }
+  .chip:hover { background: rgba(255, 255, 255, 0.18); color: #fff; }
+  @media (min-width: 1080px) { .catnav { display: none; } }
+
+  .chip[aria-current='true'] {
+    background: var(--magenta);
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 8px 18px -10px rgba(237, 35, 139, 0.95);
+  }
+</style>

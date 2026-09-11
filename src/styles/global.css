@@ -1,0 +1,338 @@
+/* ============================================================
+   تيته — نظام التصميم
+   عالم بصري: نشرة أسعار مطبوعة من علبة حلو قديمة.
+   أرضية بنفسجي مشبع، ألواح ورق، إطار علبة مسنن، وسعر واحد واضح.
+   ============================================================ */
+
+@font-face {
+  font-family: 'Rakkas';
+  src: url('/fonts/rakkas-arabic.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+FB50-FDFF, U+FE70-FEFC, U+200C-200E;
+}
+@font-face {
+  font-family: 'Rakkas';
+  src: url('/fonts/rakkas-latin.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+2000-206F, U+2212;
+}
+@font-face {
+  font-family: 'Readex Pro';
+  src: url('/fonts/readexpro-arabic.woff2') format('woff2');
+  font-weight: 300 700;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+FB50-FDFF, U+FE70-FEFC, U+200C-200E;
+}
+@font-face {
+  font-family: 'Readex Pro';
+  src: url('/fonts/readexpro-latin.woff2') format('woff2');
+  font-weight: 300 700;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+2000-206F, U+2212;
+}
+
+:root {
+  color-scheme: light;
+
+  /* ---- ألوان العلامة (مسحوبة من اللوجو) ---- */
+  --purple-950: #2A0E2F;
+  --purple-900: #3D1243;
+  --purple-800: #5A1A63;
+  --purple: #85298C;
+  --purple-600: #9A3FA1;
+  --purple-300: #C89ACD;
+  --purple-200: #E8C9EC;
+
+  --magenta: #ED238B;
+  --magenta-700: #C4136F;
+  --magenta-800: #A80F5E;
+
+  --paper: #FDF0EE;
+  --paper-2: #F7E2DE;
+  --paper-3: #F0D3CE;
+  --cream: #FFF9F7;
+
+  /* ---- أدوار ---- */
+  --ground: var(--purple);
+  --ink: var(--purple-950);
+  --ink-2: #6B4470;
+  --ink-3: #7C5182;
+  --on-purple: #FFFFFF;
+  --on-purple-2: var(--purple-200);
+  --rule: rgba(42, 14, 47, 0.14);
+  --rule-soft: rgba(42, 14, 47, 0.08);
+
+  /* ---- مقاسات ---- */
+  --r-xs: 6px;
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 24px;
+  --r-xl: 34px;
+  --r-pill: 999px;
+
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 22px;
+  --sp-6: 30px;
+  --sp-7: 42px;
+  --sp-8: 58px;
+  --sp-9: 80px;
+
+  --shadow-panel: 0 2px 0 rgba(42, 14, 47, 0.05), 0 22px 44px -28px rgba(42, 14, 47, 0.55);
+  --shadow-raise: 0 1px 0 rgba(42, 14, 47, 0.06), 0 10px 24px -14px rgba(42, 14, 47, 0.45);
+  --shadow-bar: 0 -1px 0 rgba(42, 14, 47, 0.08), 0 -14px 30px -20px rgba(42, 14, 47, 0.6);
+
+  --wrap: 640px;
+  --wrap-wide: 1080px;
+
+  --ease-snap: cubic-bezier(0.2, 1.1, 0.3, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --font-display: 'Rakkas', 'Rakkas Fallback', serif;
+  --font-text: 'Readex Pro', 'Readex Pro Fallback', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+* { margin: 0; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  /* شريط التصنيفات اللاصق */
+  scroll-padding-top: 84px;
+}
+@media (min-width: 1080px) {
+  /* الشريط العلوي بيختفي هنا، والفهرس الجانبي بياخد مكانه */
+  html { scroll-padding-top: 28px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  font-family: var(--font-text);
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 1.85;
+  color: var(--on-purple);
+  background-color: var(--purple);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+img, svg { display: block; max-width: 100%; }
+img { height: auto; }
+
+button { font: inherit; color: inherit; }
+
+a { color: inherit; }
+
+::selection {
+  background: var(--magenta);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 3px solid var(--magenta);
+  outline-offset: 3px;
+  border-radius: var(--r-xs);
+}
+.on-paper :focus-visible { outline-color: var(--magenta-700); }
+
+/* شريط التمرير — من اللوحة، مش من المتصفح */
+@supports selector(::-webkit-scrollbar) {
+  ::-webkit-scrollbar { width: 11px; height: 11px; }
+  ::-webkit-scrollbar-track { background: var(--purple-900); }
+  ::-webkit-scrollbar-thumb {
+    background: var(--purple-600);
+    border-radius: var(--r-pill);
+    border: 3px solid var(--purple-900);
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--magenta); }
+}
+html { scrollbar-color: var(--purple-600) var(--purple-900); scrollbar-width: thin; }
+
+/* ---------- الأرضية: قماشة الكاروهات ---------- */
+.gingham {
+  --g-size: 46px;
+  --g-line: rgba(255, 255, 255, 0.085);
+  background-color: var(--purple);
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      var(--g-line) 0 calc(var(--g-size) / 2),
+      transparent calc(var(--g-size) / 2) var(--g-size)
+    ),
+    repeating-linear-gradient(
+      0deg,
+      var(--g-line) 0 calc(var(--g-size) / 2),
+      transparent calc(var(--g-size) / 2) var(--g-size)
+    );
+}
+@media (min-width: 900px) {
+  .gingham { --g-size: 68px; --g-line: rgba(255, 255, 255, 0.062); }
+}
+
+/* ---------- الحاوية ---------- */
+.wrap {
+  width: 100%;
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: var(--sp-4);
+}
+.wrap-wide { max-width: var(--wrap-wide); }
+
+/* ---------- النوع ---------- */
+.display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: 0;
+}
+
+.overline {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.num {
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: 'tnum' 1;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* ---------- الأزرار ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  min-height: 56px;
+  padding: 0 var(--sp-5);
+  border: 0;
+  border-radius: var(--r-pill);
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.22s var(--ease-snap), box-shadow 0.22s var(--ease-out),
+    background-color 0.22s var(--ease-out);
+}
+.btn:active { transform: translateY(1px) scale(0.985); }
+
+.btn-primary {
+  background: var(--magenta);
+  color: #fff;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25) inset, 0 12px 26px -14px rgba(237, 35, 139, 0.95);
+}
+.btn-primary:hover { background: #FF3C9C; }
+
+.btn-ghost {
+  background: transparent;
+  color: #fff;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.42);
+}
+.btn-ghost:hover { background: rgba(255, 255, 255, 0.1); box-shadow: inset 0 0 0 2px #fff; }
+
+.btn-paper {
+  background: var(--purple);
+  color: #fff;
+  box-shadow: 0 12px 24px -16px rgba(42, 14, 47, 0.9);
+}
+.btn-paper:hover { background: var(--purple-800); }
+
+.btn svg { width: 21px; height: 21px; flex: none; }
+
+/* ---------- إطار علبة الحلو ---------- */
+.tin {
+  position: relative;
+  background: var(--paper);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-panel);
+  isolation: isolate;
+}
+/* الخط المسنن الوردي جوه الإطار */
+.tin::before {
+  content: '';
+  position: absolute;
+  inset: 9px;
+  border-radius: calc(var(--r-xl) - 7px);
+  border: 1.5px solid var(--magenta);
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* حافة مسننة — زي حافة صينية الحلو أو ورق العلبة */
+.scallop {
+  --sc: 30px;
+  height: calc(var(--sc) / 2);
+  background: var(--paper);
+  -webkit-mask-image: radial-gradient(circle calc(var(--sc) / 2) at 50% 0, transparent 98%, #000 100%);
+  mask-image: radial-gradient(circle calc(var(--sc) / 2) at 50% 0, transparent 98%, #000 100%);
+  -webkit-mask-size: var(--sc) 100%;
+  mask-size: var(--sc) 100%;
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
+}
+
+/* ---------- الورق ---------- */
+.on-paper {
+  color: var(--ink);
+  background: var(--paper);
+}
+
+/* ---------- نقط الربط بين الاسم والسعر ---------- */
+/* العنصر فاضي، فخط الأساس بتاعه هو حافته السفلية — فالنقط بتقع على السطر */
+.leader {
+  flex: 1 1 auto;
+  min-width: 14px;
+  height: 0.95em;
+  border-bottom: 2px dotted var(--rule);
+  margin-inline: var(--sp-3);
+  opacity: 0.9;
+}
+
+/* ---------- ظهور العناصر ---------- */
+.reveal {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .js .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  .js .reveal.is-in {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

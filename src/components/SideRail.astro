@@ -1,0 +1,85 @@
+---
+import { navChips, PHONE } from '../data/menu';
+import Icon from './Icon.astro';
+---
+<aside class="rail" aria-label="فهرس المنيو">
+  <p class="rail-title">المنيو</p>
+  <ul role="list">
+    {navChips.map((c) => (
+      <li>
+        <a class="rail-link" href={`#${c.id}`} data-chip={c.id}>
+          <span class="dot" aria-hidden="true"></span>
+          {c.label}
+        </a>
+      </li>
+    ))}
+  </ul>
+  <a class="rail-call" href={`tel:${PHONE}`}>
+    <Icon name="phone" />
+    <span class="num">{PHONE}</span>
+  </a>
+</aside>
+
+<style>
+  .rail {
+    display: none;
+    position: sticky;
+    top: 28px;
+    align-self: start;
+    padding: 22px 20px;
+    border-radius: var(--r-lg);
+    background: rgba(42, 14, 47, 0.34);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  }
+  .rail-title {
+    font-family: var(--font-display);
+    font-size: 30px;
+    line-height: 1.2;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+  ul { list-style: none; margin: 0 0 18px; padding: 0; display: grid; gap: 2px; }
+
+  .rail-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    padding-inline: 10px;
+    border-radius: var(--r-sm);
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--on-purple-2);
+    text-decoration: none;
+    transition: background-color 0.2s var(--ease-out), color 0.2s var(--ease-out);
+  }
+  .dot {
+    width: 7px;
+    height: 7px;
+    flex: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.28);
+    transition: background-color 0.2s var(--ease-out), transform 0.2s var(--ease-snap);
+  }
+  .rail-link:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+  .rail-link[aria-current='true'] { color: #fff; font-weight: 600; }
+  .rail-link[aria-current='true'] .dot { background: var(--magenta); transform: scale(1.55); }
+
+  .rail-call {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 48px;
+    border-radius: var(--r-pill);
+    background: var(--magenta);
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 12px 26px -16px rgba(237, 35, 139, 0.95);
+  }
+  .rail-call :global(svg) { width: 19px; height: 19px; }
+
+  @media (min-width: 1080px) { .rail { display: block; } }
+</style>

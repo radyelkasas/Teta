@@ -1,0 +1,45 @@
+---
+import { PHONE } from '../data/menu';
+import Icon from './Icon.astro';
+---
+<div class="callbar" id="callbar" hidden>
+  <a class="callbar-btn" href={`tel:${PHONE}`}>
+    <Icon name="phone" />
+    <span>اتصل بنا <span class="num">{PHONE}</span></span>
+  </a>
+</div>
+
+<style>
+  .callbar {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 30;
+    padding: 10px clamp(14px, 4vw, 24px) calc(10px + env(safe-area-inset-bottom));
+    background: linear-gradient(to top, var(--purple-950) 55%, rgba(42, 14, 47, 0));
+    box-shadow: none;
+    transform: translateY(110%);
+    transition: transform 0.42s var(--ease-out);
+  }
+  .callbar.is-on { transform: none; }
+
+  .callbar-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    max-width: 520px;
+    margin-inline: auto;
+    min-height: 54px;
+    border-radius: var(--r-pill);
+    background: var(--magenta);
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 12px 26px -14px rgba(237, 35, 139, 0.95);
+  }
+  .callbar-btn :global(svg) { width: 20px; height: 20px; }
+
+  @media (min-width: 860px) { .callbar { display: none; } }
+</style>

@@ -1,0 +1,53 @@
+---
+import { addons } from '../data/menu';
+---
+<section class="sec reveal" id="idafat" aria-labelledby="idafat-title">
+  <div class="sec-head">
+    <div class="sec-head-in">
+      <h2 class="display" id="idafat-title">اضافات</h2>
+      <p class="blurb">زوّد اللي انت عايزه على أي صنف.</p>
+    </div>
+    <div class="scallop" aria-hidden="true"></div>
+  </div>
+  <div class="sec-body on-paper">
+    <ul class="grid" role="list">
+      {addons.map((a) => (
+        <li class="add">
+          <span class="add-name">{a.name}</span>
+          <b class="num">{a.price}<span class="visually-hidden"> جنيه</span></b>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .sec { position: relative; border-radius: var(--r-xl); background: var(--paper); box-shadow: var(--shadow-panel); margin-top: var(--sp-6); }
+  .sec-head { position: relative; background: var(--purple-800); border-radius: var(--r-xl) var(--r-xl) 0 0; padding-top: clamp(24px, 6vw, 34px); }
+  .sec-head-in { padding-inline: clamp(18px, 5vw, 30px); }
+  .sec-head h2 { font-family: var(--font-display); font-weight: 400; font-size: clamp(40px, 12vw, 64px); line-height: 1.06; color: #fff; }
+  .blurb { margin-top: 6px; font-size: 15px; font-weight: 300; line-height: 1.8; color: var(--on-purple-2); }
+  .scallop { margin-top: clamp(16px, 4vw, 22px); }
+
+  .sec-body { padding: clamp(16px, 4vw, 22px) clamp(14px, 4.5vw, 28px) clamp(20px, 5vw, 26px); border-radius: 0 0 var(--r-xl) var(--r-xl); }
+  .grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 9px;
+  }
+  .add {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    min-height: 54px;
+    padding: 10px 15px;
+    border-radius: var(--r-md);
+    background: var(--paper-2);
+  }
+  .add-name { font-size: 16px; font-weight: 500; color: var(--ink); }
+  .add b { font-size: 21px; font-weight: 700; color: var(--magenta-800); }
+</style>

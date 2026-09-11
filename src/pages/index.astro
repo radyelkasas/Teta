@@ -1,0 +1,245 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import CategoryNav from '../components/CategoryNav.astro';
+import MenuSection from '../components/MenuSection.astro';
+import Torte from '../components/Torte.astro';
+import Addons from '../components/Addons.astro';
+import Branches from '../components/Branches.astro';
+import Contact from '../components/Contact.astro';
+import CallBar from '../components/CallBar.astro';
+import SideRail from '../components/SideRail.astro';
+import { sections, PHONE } from '../data/menu';
+
+const title = 'تيته — الحلو بتاع زمان | منيو حلويات شرقية وغربية';
+const description =
+  'منيو تيته كامل بالأسعار: بسبوسة وكنافة وبقلاوة بالوزن، رز بلبن وترى ليتشي وتشيز كيك ومخبوزات وتورتات. خمس فروع — ترسا والحوامدية والهرم وحدائق حلوان والقناطر. للاستفسار 17476.';
+---
+
+<Base title={title} description={description}>
+  <Hero />
+
+  <main id="menu">
+    <CategoryNav />
+
+    <div class="menu-ground gingham">
+      <div class="menu-layout">
+        <SideRail />
+        <div class="menu-col">
+          {sections.map((s, i) => <MenuSection section={s} index={i} />)}
+          <Torte />
+          <Addons />
+          <Branches />
+          <Contact />
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap wrap-wide">
+      <p class="foot-brand display">تيته</p>
+      <p class="foot-line">الحلو بتاع زمان</p>
+      <p class="foot-note">
+        الأسعار بالجنيه المصري، منقولة عن المنيو المطبوع.
+        للاستفسار <a href={`tel:${PHONE}`} class="num">{PHONE}</a>.
+      </p>
+      <p class="foot-credit">
+        تصميم وتطوير
+        <a href="https://radyelkasas.com/" target="_blank" rel="noopener">راضي القصاص</a>
+      </p>
+    </div>
+  </footer>
+
+  <CallBar />
+</Base>
+
+<style>
+  .menu-ground { padding-block: var(--sp-6) var(--sp-9); }
+  .menu-layout {
+    width: 100%;
+    max-width: 760px;
+    margin-inline: auto;
+    padding-inline: var(--sp-4);
+  }
+  .menu-col { min-width: 0; }
+
+  @media (min-width: 1080px) {
+    .menu-ground { padding-block: var(--sp-7) var(--sp-9); }
+    .menu-layout {
+      display: grid;
+      grid-template-columns: 268px minmax(0, 820px);
+      gap: 34px;
+      max-width: 1180px;
+      padding-inline: var(--sp-5);
+    }
+  }
+  /* مساحة تحت عشان زرار الاتصال الثابت ما يغطيش آخر صف */
+  @media (max-width: 859px) {
+    .menu-ground { padding-bottom: var(--sp-8); }
+    /* مساحة تحت عشان زرار الاتصال الثابت ما يغطيش أي سطر */
+    .foot { padding-bottom: calc(var(--sp-7) + 78px + env(safe-area-inset-bottom)); }
+  }
+  .menu-wrap { max-width: 700px; }
+
+  .foot {
+    padding-block: var(--sp-7) calc(var(--sp-9) + env(safe-area-inset-bottom));
+    text-align: center;
+    background: var(--purple-950);
+  }
+  .foot-brand {
+    font-family: var(--font-display);
+    font-size: 46px;
+    line-height: 1.2;
+    color: #fff;
+  }
+  .foot-line {
+    font-size: 15px;
+    color: #F9B6D8;
+    margin-top: 2px;
+  }
+  .foot-note {
+    max-width: 40ch;
+    margin: 20px auto 0;
+    font-size: 13.5px;
+    font-weight: 300;
+    line-height: 1.9;
+    color: var(--purple-300);
+  }
+  .foot-note a { color: #fff; text-decoration: none; border-bottom: 1px solid var(--magenta); }
+
+  .foot-credit {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    font-size: 13.5px;
+    font-weight: 300;
+    color: var(--purple-300);
+  }
+  .foot-credit a {
+    min-height: 24px;
+    font-weight: 600;
+    color: #fff;
+    text-decoration: none;
+    border-bottom: 1px solid var(--magenta);
+    transition: color 0.2s var(--ease-out), border-color 0.2s var(--ease-out);
+  }
+  .foot-credit a:hover { color: var(--magenta); border-bottom-color: #fff; }
+
+  @media (min-width: 860px) {
+    .foot { padding-bottom: var(--sp-8); }
+  }
+</style>
+
+<script>
+  // ---------- المقاس: طبق / نص كيلو / كيلو ----------
+  const TIER_IDS = ['plate', 'half', 'kilo'];
+
+  document.querySelectorAll<HTMLElement>('[data-tiers]').forEach((group) => {
+    const body = group.closest<HTMLElement>('.sec-body');
+    if (!body) return;
+    const buttons = Array.from(group.querySelectorAll<HTMLButtonElement>('.tier'));
+
+    const select = (id: string, focus = false) => {
+      body.dataset.tier = id;
+      buttons.forEach((b) => {
+        const on = b.dataset.tier === id;
+        b.setAttribute('aria-checked', String(on));
+        b.tabIndex = on ? 0 : -1;
+        if (on && focus) b.focus();
+      });
+      try { localStorage.setItem('teta:tier', id); } catch {}
+    };
+
+    buttons.forEach((b) => b.addEventListener('click', () => select(b.dataset.tier!)));
+
+    group.addEventListener('keydown', (e) => {
+      const key = (e as KeyboardEvent).key;
+      if (key !== 'ArrowRight' && key !== 'ArrowLeft') return;
+      e.preventDefault();
+      const i = TIER_IDS.indexOf(body.dataset.tier ?? 'plate');
+      // RTL: السهم الشمال يروح للمقاس اللي بعده
+      const step = key === 'ArrowLeft' ? 1 : -1;
+      select(TIER_IDS[(i + step + TIER_IDS.length) % TIER_IDS.length], true);
+    });
+
+    try {
+      const saved = localStorage.getItem('teta:tier');
+      if (saved && TIER_IDS.includes(saved)) select(saved);
+    } catch {}
+  });
+
+  // ---------- شريط التصنيفات: تتبّع القسم الظاهر ----------
+  const nav = document.getElementById('catnav');
+  const chips = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-chip]'));
+  const targets = chips
+    .map((c) => document.getElementById(c.dataset.chip!))
+    .filter((el): el is HTMLElement => Boolean(el));
+
+  const setNavOffset = () => {
+    if (nav) document.documentElement.style.setProperty('--nav-offset', `${nav.offsetHeight}px`);
+  };
+  setNavOffset();
+  addEventListener('resize', setNavOffset, { passive: true });
+
+  if (targets.length) {
+    let current = '';
+    const mark = (id: string) => {
+      if (id === current) return;
+      current = id;
+      chips.forEach((c) => {
+        const on = c.dataset.chip === id;
+        if (on) {
+          c.setAttribute('aria-current', 'true');
+          c.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+        } else c.removeAttribute('aria-current');
+      });
+    };
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+        if (visible) mark(visible.target.id);
+      },
+      { rootMargin: '-35% 0px -55% 0px', threshold: 0 }
+    );
+    targets.forEach((t) => io.observe(t));
+  }
+
+  // ---------- زرار الاتصال السفلي ----------
+  const bar = document.getElementById('callbar');
+  const menu = document.getElementById('menu');
+  if (bar && menu) {
+    bar.hidden = false;
+    const io2 = new IntersectionObserver(
+      ([e]) => bar.classList.toggle('is-on', e.isIntersecting || e.boundingClientRect.top < 0),
+      { rootMargin: '0px 0px -92% 0px' }
+    );
+    io2.observe(menu);
+  }
+
+  // ---------- ظهور الأقسام ----------
+  const reveals = document.querySelectorAll<HTMLElement>('.reveal');
+  if (matchMedia('(prefers-reduced-motion: no-preference)').matches && reveals.length) {
+    const io3 = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add('is-in');
+            io3.unobserve(e.target);
+          }
+        });
+      },
+      { rootMargin: '0px 0px -8% 0px', threshold: 0.02 }
+    );
+    reveals.forEach((r) => io3.observe(r));
+  } else {
+    reveals.forEach((r) => r.classList.add('is-in'));
+  }
+</script>

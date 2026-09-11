@@ -1,0 +1,122 @@
+---
+import { Image } from 'astro:assets';
+import torte2 from '../assets/menu/torte2.jpg';
+import torte1 from '../assets/menu/torte1.jpg';
+import { torteSizes, tortePhotoPrints, PHONE } from '../data/menu';
+import Icon from './Icon.astro';
+---
+<section class="sec reveal" id="torta" aria-labelledby="torta-title">
+  <div class="sec-head">
+    <div class="sec-head-in">
+      <h2 class="display" id="torta-title">التورتة</h2>
+      <p class="blurb">للمناسبات — المقاس بيحدد عدد الأفراد، والسعر يبدأ من كده حسب الشكل والحشو.</p>
+    </div>
+    <div class="duo">
+      <Image src={torte2} alt="تورتة نصها كراميل ونصها بستاشيو" widths={[320, 640]} sizes="(min-width: 700px) 300px, 46vw" loading="lazy" decoding="async" />
+      <Image src={torte1} alt="تورتة بصوص الكراميل والبندق" widths={[320, 640]} sizes="(min-width: 700px) 300px, 46vw" loading="lazy" decoding="async" />
+    </div>
+    <div class="scallop" aria-hidden="true"></div>
+  </div>
+
+  <div class="sec-body on-paper">
+    <ul class="sizes" role="list">
+      {torteSizes.map((t) => (
+        <li class="size">
+          <span class="size-badge display num">{t.size.replace('مقاس ', '')}</span>
+          <span class="size-text">
+            <b>{t.size}</b>
+            <span>{t.serves}</span>
+          </span>
+          <span class="size-price">
+            <span class="from">تبدأ من</span>
+            <b class="num">{t.from}</b>
+          </span>
+        </li>
+      ))}
+    </ul>
+
+    <div class="prints">
+      <h3>اضافة صور على التورتة</h3>
+      <ul role="list">
+        {tortePhotoPrints.map((p) => (
+          <li><span class="num">{p.size}</span><span class="leader" aria-hidden="true"></span><b class="num">{p.price}</b></li>
+        ))}
+      </ul>
+    </div>
+
+    <a class="btn btn-paper order" href={`tel:${PHONE}`}>
+      <Icon name="phone" />
+      اطلب تورتة — <span class="num">{PHONE}</span>
+    </a>
+  </div>
+</section>
+
+<style>
+  .sec { position: relative; border-radius: var(--r-xl); background: var(--paper); box-shadow: var(--shadow-panel); }
+  .sec + .sec, .sec { margin-top: var(--sp-6); }
+  .sec-head { position: relative; background: var(--purple-800); border-radius: var(--r-xl) var(--r-xl) 0 0; padding-top: clamp(24px, 6vw, 34px); }
+  .sec-head-in { padding-inline: clamp(18px, 5vw, 30px); }
+  .sec-head h2 { font-family: var(--font-display); font-weight: 400; font-size: clamp(40px, 12vw, 64px); line-height: 1.06; color: #fff; }
+  .blurb { margin-top: 6px; max-width: 42ch; font-size: 15px; font-weight: 300; line-height: 1.8; color: var(--on-purple-2); }
+
+  .duo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: clamp(16px, 4vw, 22px) clamp(12px, 4vw, 22px) 0;
+  }
+  .duo :global(img) {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: var(--r-md);
+    box-shadow: 0 14px 30px -20px rgba(0, 0, 0, 0.9);
+  }
+  .scallop { margin-top: clamp(16px, 4vw, 22px); }
+
+  .sec-body { padding: clamp(16px, 4vw, 24px) clamp(14px, 4.5vw, 28px) clamp(20px, 5vw, 28px); border-radius: 0 0 var(--r-xl) var(--r-xl); }
+
+  .sizes { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .size {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 14px;
+    padding: 13px 15px;
+    border-radius: var(--r-md);
+    background: var(--paper-2);
+  }
+  .size-badge {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--purple);
+    color: #fff;
+    font-size: 24px;
+    line-height: 1;
+  }
+  .size-text { display: grid; line-height: 1.5; }
+  .size-text b { font-size: 16.5px; font-weight: 600; color: var(--ink); }
+  .size-text span { font-size: 13.5px; font-weight: 300; color: var(--ink-2); }
+  .size-price { display: grid; justify-items: end; line-height: 1.2; }
+  .from { font-size: 12px; font-weight: 500; color: var(--ink-3); }
+  .size-price b { font-size: 26px; font-weight: 700; color: var(--magenta-800); }
+
+  .prints { margin-top: 22px; padding-top: 18px; border-top: 2px solid var(--purple-950); }
+  .prints h3 { font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+  .prints ul { list-style: none; margin: 0; padding: 0; }
+  .prints li {
+    display: flex;
+    align-items: baseline;
+    padding-block: 9px;
+    border-bottom: 1px solid var(--rule-soft);
+    font-size: 15px;
+    color: var(--ink-2);
+  }
+  .prints li:last-child { border-bottom: 0; }
+  .prints li b { font-size: 20px; font-weight: 700; color: var(--magenta-800); }
+
+  .order { width: 100%; margin-top: 22px; }
+</style>

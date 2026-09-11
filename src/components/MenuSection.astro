@@ -1,0 +1,356 @@
+---
+import { Image } from 'astro:assets';
+import type { Section } from '../data/menu';
+import { TIERS } from '../data/menu';
+
+import rice from '../assets/menu/rice.jpg';
+import tres from '../assets/menu/tres.jpg';
+import molten from '../assets/menu/molten.jpg';
+import torte1 from '../assets/menu/torte1.jpg';
+import torte2 from '../assets/menu/torte2.jpg';
+import baklava from '../assets/menu/baklava.jpg';
+
+const photos = { rice, tres, molten, torte1, torte2, baklava } as const;
+
+interface Props { section: Section; index: number }
+const { section, index } = Astro.props;
+const isWeight = section.layout === 'weight';
+const photo = section.photo ? photos[section.photo] : null;
+---
+
+<section class="sec reveal" id={section.id} aria-labelledby={`${section.id}-title`}>
+  <div class="sec-head">
+    <div class="sec-head-in">
+      <h2 class="display" id={`${section.id}-title`}>{section.title}</h2>
+      <p class="blurb">{section.blurb}</p>
+    </div>
+    {photo && (
+      <div class="photo">
+        <Image src={photo} alt={section.photoAlt ?? ''} widths={[340, 680]} sizes="(min-width: 700px) 620px, 92vw" loading={index === 0 ? 'eager' : 'lazy'} decoding="async" />
+      </div>
+    )}
+    <div class="scallop" aria-hidden="true"></div>
+  </div>
+
+  <div class={`sec-body on-paper${isWeight ? ' is-weight' : ''}`} data-tier={isWeight ? 'plate' : undefined}>
+    {isWeight && (
+      <>
+      <p class="tierbar-label" id={`${section.id}-tierlabel`}>الحلو الشرقي بيتباع بالوزن — اختار المقاس</p>
+      <div class="tierbar">
+        <div class="tiers" role="radiogroup" aria-labelledby={`${section.id}-tierlabel`} data-tiers>
+          {TIERS.map((t, i) => (
+            <button type="button" class="tier" role="radio" data-tier={t.id}
+              aria-checked={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>{t.label}</button>
+          ))}
+        </div>
+        <div class="colhead" aria-hidden="true">
+          <span class="colhead-name">الصنف</span>
+          <span class="colhead-gap" aria-hidden="true"></span>
+          <span class="colhead-prices">
+            {TIERS.map((t) => <span class="colhead-tier" data-col={t.id}>{t.label}</span>)}
+          </span>
+        </div>
+      </div>
+      </>
+    )}
+
+    <ul class="rows" role="list">
+      {section.items.map((item) => (
+        <li class="row">
+          {item.kind === 'weight' && (
+            <div class="row-main">
+              <span class="name">{item.name}</span>
+              <span class="leader" aria-hidden="true"></span>
+              <span class="prices">
+                <span class="strip">
+                  {TIERS.map((t) => (
+                    <b class="course num" data-col={t.id}>
+                      {item.prices[t.id]}
+                      <span class="visually-hidden"> جنيه {t.label}</span>
+                    </b>
+                  ))}
+                </span>
+              </span>
+            </div>
+          )}
+
+          {item.kind === 'single' && (
+            <div class="row-main">
+              <span class="name">{item.name}</span>
+              <span class="leader" aria-hidden="true"></span>
+              <b class="price num">{item.price}<span class="visually-hidden"> جنيه</span></b>
+            </div>
+          )}
+
+          {item.kind === 'variants' && (
+            <div class="row-var">
+              <span class="name">{item.name}</span>
+              <span class="vars">
+                {item.variants.map((v) => (
+                  <span class={`var${v.price === null ? ' var-na' : ''}`}>
+                    <span class="var-label">{v.label}</span>
+                    {v.price === null
+                      ? <em class="var-na-text">السعر بالفرع</em>
+                      : <b class="num">{v.price}<span class="visually-hidden"> جنيه</span></b>}
+                  </span>
+                ))}
+              </span>
+            </div>
+          )}
+        </li>
+      ))}
+    </ul>
+
+    {section.footnote && <p class="footnote">{section.footnote}</p>}
+  </div>
+</section>
+
+<style>
+  /* ملحوظة: مفيش overflow:hidden هنا — عشان شريط المقاس اللاصق يفضل شغال */
+  .sec {
+    position: relative;
+    border-radius: var(--r-xl);
+    background: var(--paper);
+    box-shadow: var(--shadow-panel);
+  }
+  .sec + .sec { margin-top: var(--sp-6); }
+
+  /* ---- الرأس: مقلوب — فاتح على بنفسجي ---- */
+  .sec-head {
+    position: relative;
+    background: var(--purple-800);
+    border-radius: var(--r-xl) var(--r-xl) 0 0;
+    padding-top: clamp(24px, 6vw, 34px);
+  }
+  .sec-head-in { padding-inline: clamp(18px, 5vw, 30px); }
+
+  .sec-head h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(40px, 12vw, 64px);
+    line-height: 1.06;
+    color: #fff;
+  }
+  .blurb {
+    margin-top: 6px;
+    max-width: 42ch;
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.8;
+    color: var(--on-purple-2);
+  }
+
+  .photo {
+    margin: clamp(16px, 4vw, 22px) clamp(12px, 4vw, 22px) 0;
+    border-radius: var(--r-md);
+    overflow: hidden;
+    box-shadow: 0 14px 30px -20px rgba(0, 0, 0, 0.9);
+  }
+  .photo :global(img) {
+    width: 100%;
+    aspect-ratio: 16 / 7.4;
+    object-fit: cover;
+  }
+
+  .sec-head .scallop { margin-top: clamp(16px, 4vw, 22px); }
+
+  /* ---- الجسم ---- */
+  .sec-body {
+    padding: 0 clamp(14px, 4.5vw, 28px) clamp(20px, 5vw, 28px);
+    border-radius: 0 0 var(--r-xl) var(--r-xl);
+  }
+
+  /* ---- شريط المقاس ---- */
+  .tierbar {
+    position: sticky;
+    top: calc(var(--nav-offset, 62px) - 1px);
+    z-index: 4;
+    margin-inline: calc(clamp(14px, 4.5vw, 28px) * -1);
+    padding: 10px clamp(14px, 4.5vw, 28px) 0;
+    background: var(--paper);
+    box-shadow: 0 12px 16px -14px rgba(42, 14, 47, 0.55);
+  }
+  .tierbar-label {
+    padding-top: 16px;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.7;
+    color: var(--ink-2);
+  }
+  .tiers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+    padding: 5px;
+    border-radius: var(--r-pill);
+    background: var(--paper-3);
+  }
+  .tier {
+    min-height: 46px;
+    border: 0;
+    border-radius: var(--r-pill);
+    background: transparent;
+    color: var(--ink-2);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.24s var(--ease-out), color 0.24s var(--ease-out),
+      box-shadow 0.24s var(--ease-out);
+  }
+  .tier[aria-checked='true'] {
+    background: var(--magenta-700);
+    color: #fff;
+    box-shadow: 0 8px 18px -10px rgba(168, 15, 94, 0.9);
+  }
+  .tier:not([aria-checked='true']):hover { background: rgba(255, 255, 255, 0.6); color: var(--ink); }
+
+  /* سطر عناوين الأعمدة */
+  .colhead {
+    display: flex;
+    align-items: baseline;
+    padding: 11px 2px 7px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ink-3);
+    border-bottom: 2px solid var(--purple-950);
+  }
+  .colhead-prices { display: flex; flex: none; }
+  .colhead-gap { flex: 1 1 auto; min-width: 14px; }
+  .colhead-tier { display: none; text-align: start; }
+  .sec-body[data-tier='plate'] .colhead-tier[data-col='plate'],
+  .sec-body[data-tier='half'] .colhead-tier[data-col='half'],
+  .sec-body[data-tier='kilo'] .colhead-tier[data-col='kilo'] {
+    display: block;
+    color: var(--magenta-800);
+  }
+
+  /* ---- الصفوف ---- */
+  .rows { list-style: none; margin: 0; padding: 0; }
+  .row { padding-block: 13px; border-bottom: 1px solid var(--rule-soft); }
+  .row:last-child { border-bottom: 0; }
+
+  .row-main { display: flex; align-items: baseline; }
+  .name {
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.55;
+    color: var(--ink);
+    text-wrap: pretty;
+  }
+  .price, .prices {
+    font-size: 25px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--magenta-800);
+    letter-spacing: -0.01em;
+  }
+  .price { flex: none; }
+
+  /* نافذة السعر: الشرائح بتخطي خطوة واحدة لما تغيّر المقاس */
+  .prices {
+    display: block;
+    flex: none;
+    height: 1.3em;
+    min-width: 3.4ch;
+    overflow: hidden;
+    text-align: start;
+  }
+  .strip {
+    display: block;
+    transform: translateY(calc(var(--course, 0) * -1.3em));
+    transition: transform 0.44s var(--ease-snap);
+  }
+  .course { display: block; height: 1.3em; font-weight: 700; }
+
+  .sec-body[data-tier='half'] .strip { --course: 1; }
+  .sec-body[data-tier='kilo'] .strip { --course: 2; }
+
+  /* ---- صفوف الأصناف اللي ليها أحجام ---- */
+  .row-var { display: grid; gap: 9px; }
+  .vars { display: flex; flex-wrap: wrap; gap: 8px; }
+  .var {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 9px;
+    padding: 7px 15px;
+    border-radius: var(--r-pill);
+    background: var(--paper-2);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink-2);
+  }
+  .var b { font-size: 20px; font-weight: 700; color: var(--magenta-800); }
+  .var-na { background: transparent; box-shadow: inset 0 0 0 1.5px var(--paper-3); }
+  .var-na-text { font-style: normal; font-size: 13.5px; color: var(--ink-3); }
+
+  .footnote {
+    margin-top: 18px;
+    padding: 13px 15px;
+    border-radius: var(--r-sm);
+    background: var(--paper-2);
+    font-size: 13.5px;
+    font-weight: 300;
+    line-height: 1.85;
+    color: var(--ink-2);
+  }
+
+  /* ---- من 620px وفوق: الأعمدة التلاتة جنب بعض ---- */
+  /* الرأس بيبقى عمودين — العنوان جنب الصورة */
+  @media (min-width: 760px) {
+    .sec-head:has(.photo) {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 310px);
+      align-items: center;
+      column-gap: clamp(20px, 3vw, 34px);
+      padding-top: clamp(26px, 3.4vw, 38px);
+    }
+    .sec-head:has(.photo) .sec-head-in { padding-inline-end: 0; }
+    .sec-head:has(.photo) .photo {
+      margin: 0;
+      margin-inline-end: clamp(22px, 3vw, 34px);
+    }
+    .sec-head:has(.photo) .photo :global(img) { aspect-ratio: 4 / 3; }
+    .sec-head h2 { font-size: clamp(52px, 4.8vw, 68px); }
+    .blurb { margin-top: 10px; font-size: 16px; }
+    .sec-head:has(.photo) .scallop {
+      grid-column: 1 / -1;
+      margin-top: clamp(22px, 3vw, 32px);
+    }
+  }
+
+  @media (min-width: 620px) {
+    .sec-body { --pricecol: 78px; --pricegap: 16px; }
+    /* الأعمدة التلاتة كلها بانت، فالمفتاح بيرجع لحجمه الطبيعي */
+    .tiers { grid-template-columns: repeat(3, minmax(104px, auto)); width: max-content; }
+    .colhead-tier {
+      display: block !important;
+      width: var(--pricecol);
+      margin-inline-start: var(--pricegap);
+      white-space: nowrap;
+      color: var(--ink-3);
+    }
+    .sec-body[data-tier='plate'] .colhead-tier[data-col='plate'],
+    .sec-body[data-tier='half'] .colhead-tier[data-col='half'],
+    .sec-body[data-tier='kilo'] .colhead-tier[data-col='kilo'] { color: var(--magenta-800); }
+
+    .prices { height: auto; overflow: visible; min-width: 0; display: flex; }
+    .strip { display: flex; transform: none; }
+    .course {
+      width: var(--pricecol);
+      margin-inline-start: var(--pricegap);
+      height: auto;
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--ink-3);
+      transition: color 0.24s var(--ease-out), font-size 0.24s var(--ease-out);
+    }
+    .sec-body[data-tier='plate'] .course[data-col='plate'],
+    .sec-body[data-tier='half'] .course[data-col='half'],
+    .sec-body[data-tier='kilo'] .course[data-col='kilo'] {
+      font-size: 25px;
+      font-weight: 700;
+      color: var(--magenta-800);
+    }
+    .leader { margin-inline-end: 0; }
+  }
+</style>
